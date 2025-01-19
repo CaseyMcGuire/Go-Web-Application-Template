@@ -1,3 +1,4 @@
+import {createRoot} from "react-dom/client";
 
 export default function App() {
   return (
@@ -6,3 +7,7 @@ export default function App() {
     </div>
   )
 }
+
+const domNode = document.getElementById('root');
+const root = createRoot(domNode!!);
+root.render(<App />);

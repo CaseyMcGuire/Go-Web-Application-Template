@@ -6,13 +6,12 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
-    "module": "node16",        // or "nodenext"
-    "moduleResolution": "node16",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ES2022",
     "jsx": "react-jsx",
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
   }
 }
