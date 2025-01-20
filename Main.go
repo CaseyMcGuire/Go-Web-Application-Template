@@ -2,7 +2,7 @@ package main
 
 import (
 	"gameboard/src/server/build"
-	"html/template"
+	"gameboard/src/server/views"
 	"log"
 	"net/http"
 )
@@ -17,21 +17,16 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		tmpl := template.Must(
-			template.ParseFiles("src/server/views/ReactPage.html"))
-		tmpl.Execute(w, ReactPageData{
-			Title:      "Hello Go",
-			BundleName: "index",
-		})
+		foo := views.ReactPage("Foo", "index")
+		err := foo.Render(w)
+		if err != nil {
+			return
+		}
 	})
+
 	err := http.ListenAndServe(":3001", nil)
 	if err != nil {
 		log.Fatal("Failed starting server")
 		return
 	}
-}
-
-type ReactPageData struct {
-	Title      string
-	BundleName string
 }

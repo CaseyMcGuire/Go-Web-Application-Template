@@ -22,7 +22,8 @@ const config : Configuration = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'src/assets/bundles')
+    path: path.resolve(__dirname, 'src/assets/bundles'),
+    module: true
   },
   module: {
     rules: [
@@ -49,9 +50,13 @@ const config : Configuration = {
 //      filename: 'styles.css',
 //    }),
   ],
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
+  externalsType: "module",
+  externals: [
+    'react',
+    'react-dom',
+  ],
+  experiments: {
+    outputModule: true, // Tells webpack it can output ES modules
   },
 };
 
