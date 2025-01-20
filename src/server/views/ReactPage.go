@@ -20,7 +20,7 @@ func ReactPage(title string, bundleName string) Node {
 				),
 				html.Link(
 					Attr("rel", "stylesheet"),
-					Attr("href", "/bundles/styles.css"),
+					Attr("href", "/assets/bundles/styles.css"),
 				),
 				html.Script(
 					Attr("type", "importmap"),
