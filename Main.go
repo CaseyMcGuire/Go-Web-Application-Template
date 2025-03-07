@@ -2,6 +2,7 @@ package main
 
 import (
 	"gameboard/src/server/build"
+	"gameboard/src/server/controllers"
 	"gameboard/src/server/views"
 	"log"
 	"net/http"
@@ -14,15 +15,22 @@ func main() {
 	// serve static assets from `/assets`
 	fs := http.FileServer(http.Dir("src/assets"))
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
+	userController := controllers.UserController{}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
 		foo := views.ReactPage("Foo", "index")
 		err := foo.Render(w)
 		if err != nil {
 			return
 		}
 	})
+
+	http.HandleFunc("/login", userController.HandleLogin)
+	http.HandleFunc("/register", userController.HandleRegister)
 
 	err := http.ListenAndServe(":3001", nil)
 	if err != nil {
