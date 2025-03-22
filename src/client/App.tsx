@@ -1,6 +1,8 @@
 import * as stylex from "@stylexjs/stylex";
-import {renderComponent} from "./util/ReactPageUtils";
+import {renderComponent} from "util/ReactPageUtils";
 import {createBrowserRouter, RouterProvider} from "react-router";
+import LoginPage from "pages/LoginPage/LoginPage";
+import RegisterPage from "pages/RegisterPage/RegisterPage";
 
 const styles = stylex.create({
   body: {
@@ -15,11 +17,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <div>login</div>
+    element: <LoginPage />
   },
   {
     path: '/register',
-    element: <div>Register</div>
+    element: <RegisterPage />
   }
 ])
 

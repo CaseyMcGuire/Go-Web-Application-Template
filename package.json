@@ -4,7 +4,8 @@
   "description": "A gaming app",
   "main": "index.js",
   "scripts": {
-    "webpack": "webpack --config webpack.production.ts"
+    "webpack": "webpack --config webpack.production.ts",
+    "webpack-development": "webpack --config webpack.development.ts"
   },
   "author": "Casey McGuire",
   "license": "ISC",

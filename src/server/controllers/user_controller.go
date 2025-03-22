@@ -17,7 +17,7 @@ var (
 	authenticated = "authenticated"
 )
 
-func (u UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
+func (u *UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "user_session")
 	if auth, ok := session.Values[authenticated].(bool); ok && auth {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -27,11 +27,11 @@ func (u UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		views.ReactPage("Login", "index").Render(w)
 		return
-	} else if r.Method != http.MethodPost {
-		username := r.FormValue("username")
+	} else if r.Method == http.MethodPost {
+		email := r.FormValue("email")
 		password := r.FormValue("password")
 
-		if u.userService.UserWithPasswordExists(username, password) {
+		if u.userService.UserWithPasswordExists(email, password) {
 			session.Values[authenticated] = true
 			sessionErr := session.Save(r, w)
 			if sessionErr == nil {
@@ -39,13 +39,15 @@ func (u UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
 			} else {
 				http.Error(w, sessionErr.Error(), http.StatusInternalServerError)
 			}
+		} else {
+			http.Redirect(w, r, "/login?no_such_user=true", http.StatusFound)
 		}
 	} else {
 		panic(fmt.Sprintf("Unsupported HTTP method: %s", r.Method))
 	}
 }
 
-func (u UserController) HandleRegister(w http.ResponseWriter, r *http.Request) {
+func (u *UserController) HandleRegister(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "user_session")
 	if auth, ok := session.Values[authenticated].(bool); ok && auth {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -56,7 +58,7 @@ func (u UserController) HandleRegister(w http.ResponseWriter, r *http.Request) {
 		views.ReactPage("Register", "index").Render(w)
 		return
 	} else if r.Method == http.MethodPost {
-		username := r.FormValue("username")
+		username := r.FormValue("email")
 		password := r.FormValue("password")
 
 		if u.userService.UserExists(username) {
@@ -65,9 +67,26 @@ func (u UserController) HandleRegister(w http.ResponseWriter, r *http.Request) {
 			err, _ := u.userService.CreateUser(username, password)
 			if err != nil {
 				http.Error(w, "Something went wrong. Please try again", http.StatusInternalServerError)
+			} else {
+				http.Redirect(w, r, "/login", http.StatusFound)
 			}
 		}
 	} else {
 		panic(fmt.Sprintf("Unsupported HTTP method: %s", r.Method))
+	}
+}
+
+func (u *UserController) HandleLogout(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "user_session")
+
+	// Set MaxAge to -1 to delete the cookie
+	session.Options.MaxAge = -1
+	_ = session.Save(r, w)
+	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+func NewUserController() *UserController {
+	return &UserController{
+		userService: *services.NewUserService(),
 	}
 }

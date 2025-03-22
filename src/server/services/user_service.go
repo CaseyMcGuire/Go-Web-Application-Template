@@ -11,7 +11,7 @@ type User struct {
 }
 
 func (u UserService) CreateUser(username string, password string) (error, *User) {
-	password, exists := u.store[username]
+	_, exists := u.store[username]
 	if exists {
 		return errors.New("User with that username already exists"), nil
 	} else {
@@ -33,4 +33,10 @@ func (u UserService) UserWithPasswordExists(username string, password string) bo
 		return false
 	}
 	return storedPassword == password
+}
+
+func NewUserService() *UserService {
+	return &UserService{
+		store: make(map[string]string),
+	}
 }
