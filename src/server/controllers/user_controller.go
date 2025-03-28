@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	ent "gameboard/src/server/db/ent/codegen"
 	"gameboard/src/server/services"
 	"gameboard/src/server/views"
 	"github.com/gorilla/sessions"
@@ -30,8 +30,13 @@ func (u *UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
+		exists, err := u.userService.UserWithPasswordExists(r.Context(), email, password)
+		if err != nil {
+			http.Redirect(w, r, "/500", http.StatusInternalServerError)
+			return
+		}
 
-		if u.userService.UserWithPasswordExists(email, password) {
+		if exists {
 			session.Values[authenticated] = true
 			sessionErr := session.Save(r, w)
 			if sessionErr == nil {
@@ -43,7 +48,7 @@ func (u *UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/login?no_such_user=true", http.StatusFound)
 		}
 	} else {
-		panic(fmt.Sprintf("Unsupported HTTP method: %s", r.Method))
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
@@ -58,13 +63,15 @@ func (u *UserController) HandleRegister(w http.ResponseWriter, r *http.Request) 
 		views.ReactPage("Register", "index").Render(w)
 		return
 	} else if r.Method == http.MethodPost {
-		username := r.FormValue("email")
+		email := r.FormValue("email")
 		password := r.FormValue("password")
-
-		if u.userService.UserExists(username) {
+		exists, err := u.userService.UserExists(r.Context(), email)
+		if err != nil {
+			http.Redirect(w, r, "/500", http.StatusInternalServerError)
+		} else if exists {
 			http.Redirect(w, r, "/register?error=username_already_taken", http.StatusSeeOther)
 		} else {
-			err, _ := u.userService.CreateUser(username, password)
+			_, err := u.userService.CreateUser(r.Context(), email, password)
 			if err != nil {
 				http.Error(w, "Something went wrong. Please try again", http.StatusInternalServerError)
 			} else {
@@ -72,7 +79,7 @@ func (u *UserController) HandleRegister(w http.ResponseWriter, r *http.Request) 
 			}
 		}
 	} else {
-		panic(fmt.Sprintf("Unsupported HTTP method: %s", r.Method))
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 }
 
@@ -85,8 +92,12 @@ func (u *UserController) HandleLogout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-func NewUserController() *UserController {
+func NewUserController(
+	dbClient ent.Client,
+) *UserController {
 	return &UserController{
-		userService: *services.NewUserService(),
+		userService: *services.NewUserService(
+			dbClient,
+		),
 	}
 }

@@ -1,42 +1,80 @@
 package services
 
-import "errors"
+import (
+	"context"
+	ent "gameboard/src/server/db/ent/codegen"
+	"gameboard/src/server/db/ent/codegen/user"
+	"golang.org/x/crypto/bcrypt"
+)
 
 type UserService struct {
-	store map[string]string
+	dbClient ent.Client
 }
 
-type User struct {
-	Username string
+func (u UserService) CreateUser(ctx context.Context, email string, password string) (*ent.User, error) {
+	hashedPassword, err := HashPassword(password)
+	if err != nil {
+		return nil, err
+	}
+
+	newUser, err := u.dbClient.User.
+		Create().
+		SetEmail(email).
+		SetHashedPassword(hashedPassword).
+		Save(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+	return newUser, nil
 }
 
-func (u UserService) CreateUser(username string, password string) (error, *User) {
-	_, exists := u.store[username]
-	if exists {
-		return errors.New("User with that username already exists"), nil
-	} else {
-		u.store[username] = password
-		return nil, &User{
-			Username: username,
+func (u UserService) UserExists(ctx context.Context, email string) (bool, error) {
+	exists, err := u.dbClient.User.
+		Query().
+		Where(user.Email(email)).
+		Exist(ctx)
+
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
+func (u UserService) UserWithPasswordExists(ctx context.Context, email string, password string) (bool, error) {
+	storedUser, err := u.dbClient.User.
+		Query().
+		Where(user.Email(email)).
+		Only(ctx)
+
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return false, nil
 		}
+		return false, err
 	}
+
+	return checkPassword(storedUser.HashedPassword, password), nil
 }
 
-func (u UserService) UserExists(username string) bool {
-	_, exists := u.store[username]
-	return exists
-}
-
-func (u UserService) UserWithPasswordExists(username string, password string) bool {
-	storedPassword, exists := u.store[username]
-	if !exists {
-		return false
+func HashPassword(password string) (string, error) {
+	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
 	}
-	return storedPassword == password
+	return string(hashedBytes), nil
 }
 
-func NewUserService() *UserService {
+func checkPassword(hashedPassword, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil
+}
+
+func NewUserService(
+	dbClient ent.Client,
+) *UserService {
+
 	return &UserService{
-		store: make(map[string]string),
+		dbClient: dbClient,
 	}
 }
