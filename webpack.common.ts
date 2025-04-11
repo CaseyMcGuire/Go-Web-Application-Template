@@ -3,7 +3,7 @@ import { Configuration } from "webpack";
 
 
 // @ts-ignore
-import StylexPlugin from "@stylexjs/webpack-plugin";
+import StylexPlugin from "./packages/stylex-webpack-plugin/index";
 
 
 
@@ -48,9 +48,7 @@ const config : Configuration = {
     ]
   },
   plugins: [
-    new StylexPlugin({
-      filename: 'styles.css',
-    }),
+    new StylexPlugin(),
   ],
   externalsType: "module",
   externals: [
