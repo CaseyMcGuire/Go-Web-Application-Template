@@ -8,6 +8,7 @@ import (
 	ent "gameboard/src/server/db/ent/codegen"
 	"gameboard/src/server/util"
 	"gameboard/src/server/views"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -53,6 +54,11 @@ func main() {
 			return
 		}
 	})
+
+	srv := build.CreateGraphqlServer()
+
+	http.Handle("/graphql_playground", playground.Handler("GraphQL playground", "/graphql"))
+	http.Handle("/graphql", srv)
 
 	http.HandleFunc("/login", userController.HandleLogin)
 	http.HandleFunc("/register", userController.HandleRegister)
