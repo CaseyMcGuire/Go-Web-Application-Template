@@ -9,5 +9,8 @@
         "allExtensions": true
       }
     ]
+  ],
+  "plugins": [
+    "relay"
   ]
 }

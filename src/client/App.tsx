@@ -3,6 +3,10 @@ import {renderComponent} from "util/ReactPageUtils";
 import {createBrowserRouter, RouterProvider} from "react-router";
 import LoginPage from "pages/LoginPage/LoginPage";
 import RegisterPage from "pages/RegisterPage/RegisterPage";
+import {RelayEnvironmentProvider} from "react-relay";
+import {RelayConfig} from "relay/RelayConfig";
+import { Suspense } from "react";
+import IndexPage from "pages/IndexPage/IndexPage";
 
 const styles = stylex.create({
   body: {
@@ -13,7 +17,7 @@ const styles = stylex.create({
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div>lasjdkf</div>
+    element: <IndexPage />
   },
   {
     path: '/login',
@@ -27,7 +31,11 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <RouterProvider router={router} />
+    <RelayEnvironmentProvider environment={RelayConfig.getEnvironment()} >
+      <Suspense fallback={null}>
+        <RouterProvider router={router} />
+      </Suspense>
+    </RelayEnvironmentProvider>
   )
 }
 
