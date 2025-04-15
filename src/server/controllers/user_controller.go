@@ -93,7 +93,7 @@ func (u *UserController) HandleLogout(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewUserController(
-	dbClient ent.Client,
+	dbClient *ent.Client,
 ) *UserController {
 	return &UserController{
 		userService: *services.NewUserService(

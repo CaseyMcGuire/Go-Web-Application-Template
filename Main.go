@@ -36,7 +36,7 @@ func main() {
 	}(dbClient)
 
 	userController := controllers.NewUserController(
-		*dbClient,
+		dbClient,
 	)
 
 	// serve static assets from `/assets`
