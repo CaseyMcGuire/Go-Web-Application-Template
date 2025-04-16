@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"gameboard/src/server/util"
 	"github.com/joho/godotenv"
+	"gowebtemplate/src/server/util"
 	"log"
 	"os"
 	"os/exec"

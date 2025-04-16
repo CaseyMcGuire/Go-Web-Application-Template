@@ -5,11 +5,11 @@ package enttest
 import (
 	"context"
 
-	"gameboard/src/server/db/ent/codegen"
+	"gowebtemplate/src/server/db/ent/codegen"
 	// required by schema hooks.
-	_ "gameboard/src/server/db/ent/codegen/runtime"
+	_ "gowebtemplate/src/server/db/ent/codegen/runtime"
 
-	"gameboard/src/server/db/ent/codegen/migrate"
+	"gowebtemplate/src/server/db/ent/codegen/migrate"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

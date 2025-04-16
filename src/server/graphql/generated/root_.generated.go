@@ -6,7 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"gameboard/src/server/graphql/models"
+	"gowebtemplate/src/server/graphql/models"
 	"sync/atomic"
 
 	"github.com/99designs/gqlgen/graphql"

@@ -3,7 +3,7 @@
 package user
 
 import (
-	"gameboard/src/server/db/ent/codegen/predicate"
+	"gowebtemplate/src/server/db/ent/codegen/predicate"
 
 	"entgo.io/ent/dialect/sql"
 )

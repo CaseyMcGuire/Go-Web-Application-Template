@@ -8,8 +8,8 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
-	graphql1 "gameboard/src/server/graphql/generated"
-	"gameboard/src/server/graphql/models"
+	graphql1 "gowebtemplate/src/server/graphql/generated"
+	"gowebtemplate/src/server/graphql/models"
 	"math/big"
 )
 

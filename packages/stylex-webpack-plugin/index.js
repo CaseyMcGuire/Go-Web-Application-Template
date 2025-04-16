@@ -133,7 +133,6 @@ class StylexPlugin {
             );
           }
         }
-        console.log(cssPerChunk)
         return cssPerChunk;
       };
 

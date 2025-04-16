@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	ent "gameboard/src/server/db/ent/codegen"
-	"gameboard/src/server/services"
-	"gameboard/src/server/views"
 	"github.com/gorilla/sessions"
+	ent "gowebtemplate/src/server/db/ent/codegen"
+	"gowebtemplate/src/server/services"
+	"gowebtemplate/src/server/views"
 	"net/http"
 )
 

@@ -5,7 +5,7 @@ package codegen
 import (
 	"context"
 	"fmt"
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 	"sync"
 	"sync/atomic"
 

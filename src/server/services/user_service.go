@@ -2,9 +2,9 @@ package services
 
 import (
 	"context"
-	ent "gameboard/src/server/db/ent/codegen"
-	"gameboard/src/server/db/ent/codegen/user"
 	"golang.org/x/crypto/bcrypt"
+	ent "gowebtemplate/src/server/db/ent/codegen"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 )
 
 type UserService struct {

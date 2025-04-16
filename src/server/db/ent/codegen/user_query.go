@@ -5,8 +5,8 @@ package codegen
 import (
 	"context"
 	"fmt"
-	"gameboard/src/server/db/ent/codegen/predicate"
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/predicate"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 	"math"
 
 	"entgo.io/ent"

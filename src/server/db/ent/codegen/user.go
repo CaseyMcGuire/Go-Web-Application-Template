@@ -4,7 +4,7 @@ package codegen
 
 import (
 	"fmt"
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 	"strings"
 
 	"entgo.io/ent"

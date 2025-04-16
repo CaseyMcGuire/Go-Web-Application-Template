@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"gameboard/src/server/build"
-	"gameboard/src/server/controllers"
-	"gameboard/src/server/db"
-	ent "gameboard/src/server/db/ent/codegen"
-	"gameboard/src/server/util"
-	"gameboard/src/server/views"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/joho/godotenv"
+	"gowebtemplate/src/server/build"
+	"gowebtemplate/src/server/controllers"
+	"gowebtemplate/src/server/db"
+	ent "gowebtemplate/src/server/db/ent/codegen"
+	"gowebtemplate/src/server/util"
+	"gowebtemplate/src/server/views"
 	"log"
 	"net/http"
 )

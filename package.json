@@ -1,5 +1,5 @@
 {
-  "name": "gameboard",
+  "name": "go-template",
   "version": "1.0.0",
   "description": "A gaming app",
   "main": "index.js",

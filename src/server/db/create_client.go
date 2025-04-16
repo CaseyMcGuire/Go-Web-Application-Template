@@ -4,8 +4,8 @@ import (
 	"context"
 	"entgo.io/ent/dialect"
 	"fmt"
-	ent "gameboard/src/server/db/ent/codegen"
 	_ "github.com/lib/pq"
+	ent "gowebtemplate/src/server/db/ent/codegen"
 	"log"
 	"os"
 )

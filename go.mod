@@ -1,4 +1,4 @@
-module gameboard
+module gowebtemplate
 
 go 1.24.2
 

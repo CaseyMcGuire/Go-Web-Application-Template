@@ -5,7 +5,7 @@ package codegen
 import (
 	"context"
 	"errors"
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"

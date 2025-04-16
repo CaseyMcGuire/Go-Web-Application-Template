@@ -4,7 +4,7 @@ package codegen
 
 import (
 	"context"
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 
 	"github.com/99designs/gqlgen/graphql"
 )

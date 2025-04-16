@@ -3,8 +3,8 @@
 package codegen
 
 import (
-	"gameboard/src/server/db/ent/codegen/user"
-	"gameboard/src/server/db/ent/schema"
+	"gowebtemplate/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

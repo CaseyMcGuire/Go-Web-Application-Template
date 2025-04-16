@@ -4,8 +4,8 @@ package codegen
 
 import (
 	"context"
-	"gameboard/src/server/db/ent/codegen/predicate"
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/predicate"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"

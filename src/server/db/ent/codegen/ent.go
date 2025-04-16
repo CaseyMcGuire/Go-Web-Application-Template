@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 	"reflect"
 	"sync"
 

@@ -9,9 +9,9 @@ import (
 	"log"
 	"reflect"
 
-	"gameboard/src/server/db/ent/codegen/migrate"
+	"gowebtemplate/src/server/db/ent/codegen/migrate"
 
-	"gameboard/src/server/db/ent/codegen/user"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
