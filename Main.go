@@ -67,7 +67,7 @@ func main() {
 	fmt.Printf("Starting server...")
 	err = http.ListenAndServe(":3001", nil)
 	if err != nil {
-		log.Fatal("Failed starting server")
+		log.Fatal(fmt.Sprintf("Failed starting server %v", err))
 		return
 	}
 }
