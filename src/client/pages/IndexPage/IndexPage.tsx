@@ -7,6 +7,8 @@ export default function IndexPage() {
     query IndexPageQuery {
         todos {
             id
+            text
+            complete
         }
     }
   `, {});

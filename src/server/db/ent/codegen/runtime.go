@@ -3,6 +3,7 @@
 package codegen
 
 import (
+	"gowebtemplate/src/server/db/ent/codegen/todo"
 	"gowebtemplate/src/server/db/ent/codegen/user"
 	"gowebtemplate/src/server/db/ent/schema"
 )
@@ -11,6 +12,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	todoFields := schema.Todo{}.Fields()
+	_ = todoFields
+	// todoDescText is the schema descriptor for text field.
+	todoDescText := todoFields[0].Descriptor()
+	// todo.TextValidator is a validator for the "text" field. It is called by the builders before save.
+	todo.TextValidator = todoDescText.Validators[0].(func(string) error)
+	// todoDescComplete is the schema descriptor for complete field.
+	todoDescComplete := todoFields[1].Descriptor()
+	// todo.DefaultComplete holds the default value on creation for the complete field.
+	todo.DefaultComplete = todoDescComplete.Default.(bool)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescEmail is the schema descriptor for email field.

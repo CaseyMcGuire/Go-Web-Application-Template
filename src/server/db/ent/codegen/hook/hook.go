@@ -8,6 +8,18 @@ import (
 	"gowebtemplate/src/server/db/ent/codegen"
 )
 
+// The TodoFunc type is an adapter to allow the use of ordinary
+// function as Todo mutator.
+type TodoFunc func(context.Context, *codegen.TodoMutation) (codegen.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TodoFunc) Mutate(ctx context.Context, m codegen.Mutation) (codegen.Value, error) {
+	if mv, ok := m.(*codegen.TodoMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *codegen.TodoMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *codegen.UserMutation) (codegen.Value, error)

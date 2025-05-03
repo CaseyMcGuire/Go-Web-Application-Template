@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<da07a289a476701897679e8b17008cce>>
+ * @generated SignedSource<<779e2276f291518303d4bd0890a90c65>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,9 @@ import { ConcreteRequest } from 'relay-runtime';
 export type IndexPageQuery$variables = Record<PropertyKey, never>;
 export type IndexPageQuery$data = {
   readonly todos: ReadonlyArray<{
+    readonly complete: boolean;
     readonly id: string;
+    readonly text: string;
   }>;
 };
 export type IndexPageQuery = {
@@ -35,6 +37,20 @@ var v0 = [
         "args": null,
         "kind": "ScalarField",
         "name": "id",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "text",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "complete",
         "storageKey": null
       }
     ],
@@ -59,16 +75,16 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "cabaa9183b127418eb84b5ce1ddfc1cf",
+    "cacheID": "a1b9e5264957fb5ce080a2052d5d7df8",
     "id": null,
     "metadata": {},
     "name": "IndexPageQuery",
     "operationKind": "query",
-    "text": "query IndexPageQuery {\n  todos {\n    id\n  }\n}\n"
+    "text": "query IndexPageQuery {\n  todos {\n    id\n    text\n    complete\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d9ab5049e55354d90509d489a78fe464";
+(node as any).hash = "794d01e3ab8383c95cb6b05bb49ab382";
 
 export default node;

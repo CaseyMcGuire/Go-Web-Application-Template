@@ -1,13 +1,13 @@
 package resolvers
 
-//go:generate go run github.com/99designs/gqlgen generate
-
-import "gowebtemplate/src/server/graphql/models"
+import (
+	ent "gowebtemplate/src/server/db/ent/codegen"
+)
 
 // This file will not be regenerated automatically.
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	todos []*models.Todo
+	Ent *ent.Client
 }
