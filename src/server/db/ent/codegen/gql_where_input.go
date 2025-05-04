@@ -45,6 +45,10 @@ type TodoWhereInput struct {
 	// "complete" field predicates.
 	Complete    *bool `json:"complete,omitempty"`
 	CompleteNEQ *bool `json:"completeNEQ,omitempty"`
+
+	// "user" edge predicates.
+	HasUser     *bool             `json:"hasUser,omitempty"`
+	HasUserWith []*UserWhereInput `json:"hasUserWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -188,6 +192,24 @@ func (i *TodoWhereInput) P() (predicate.Todo, error) {
 		predicates = append(predicates, todo.CompleteNEQ(*i.CompleteNEQ))
 	}
 
+	if i.HasUser != nil {
+		p := todo.HasUser()
+		if !*i.HasUser {
+			p = todo.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasUserWith) > 0 {
+		with := make([]predicate.User, 0, len(i.HasUserWith))
+		for _, w := range i.HasUserWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasUserWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, todo.HasUserWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyTodoWhereInput
@@ -244,6 +266,10 @@ type UserWhereInput struct {
 	HashedPasswordHasSuffix    *string  `json:"hashedPasswordHasSuffix,omitempty"`
 	HashedPasswordEqualFold    *string  `json:"hashedPasswordEqualFold,omitempty"`
 	HashedPasswordContainsFold *string  `json:"hashedPasswordContainsFold,omitempty"`
+
+	// "todos" edge predicates.
+	HasTodos     *bool             `json:"hasTodos,omitempty"`
+	HasTodosWith []*TodoWhereInput `json:"hasTodosWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -420,6 +446,24 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 		predicates = append(predicates, user.HashedPasswordContainsFold(*i.HashedPasswordContainsFold))
 	}
 
+	if i.HasTodos != nil {
+		p := user.HasTodos()
+		if !*i.HasTodos {
+			p = user.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTodosWith) > 0 {
+		with := make([]predicate.Todo, 0, len(i.HasTodosWith))
+		for _, w := range i.HasTodosWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTodosWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, user.HasTodosWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyUserWhereInput

@@ -31,6 +31,17 @@ func (t *TodoQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
+
+		case "user":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&UserClient{config: t.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, userImplementors)...); err != nil {
+				return err
+			}
+			t.withUser = query
 		case "text":
 			if _, ok := fieldSeen[todo.FieldText]; !ok {
 				selectedFields = append(selectedFields, todo.FieldText)
@@ -103,6 +114,19 @@ func (u *UserQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
+
+		case "todos":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TodoClient{config: u.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, todoImplementors)...); err != nil {
+				return err
+			}
+			u.WithNamedTodos(alias, func(wq *TodoQuery) {
+				*wq = *query
+			})
 		case "email":
 			if _, ok := fieldSeen[user.FieldEmail]; !ok {
 				selectedFields = append(selectedFields, user.FieldEmail)

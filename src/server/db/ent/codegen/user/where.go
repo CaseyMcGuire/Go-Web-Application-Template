@@ -6,6 +6,7 @@ import (
 	"gowebtemplate/src/server/db/ent/codegen/predicate"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -191,6 +192,29 @@ func HashedPasswordEqualFold(v string) predicate.User {
 // HashedPasswordContainsFold applies the ContainsFold predicate on the "hashed_password" field.
 func HashedPasswordContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldHashedPassword, v))
+}
+
+// HasTodos applies the HasEdge predicate on the "todos" edge.
+func HasTodos() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TodosTable, TodosColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTodosWith applies the HasEdge predicate on the "todos" edge with a given conditions (other predicates).
+func HasTodosWith(preds ...predicate.Todo) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newTodosStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

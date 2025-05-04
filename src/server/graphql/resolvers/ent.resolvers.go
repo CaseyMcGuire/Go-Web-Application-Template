@@ -27,6 +27,11 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*codegen.Todo, error) {
 	return foo, err
 }
 
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context) ([]*codegen.User, error) {
+	return r.Ent.User.Query().All(ctx)
+}
+
 // Query returns graphql1.QueryResolver implementation.
 func (r *Resolver) Query() graphql1.QueryResolver { return &queryResolver{r} }
 

@@ -6,10 +6,27 @@ package resolvers
 
 import (
 	"context"
+	"gowebtemplate/src/server/db/ent/codegen"
+	graphql1 "gowebtemplate/src/server/graphql/generated"
 	"gowebtemplate/src/server/graphql/models"
 )
+
+// CreateTodo is the resolver for the createTodo field.
+func (r *mutationResolver) CreateTodo(ctx context.Context, input *codegen.CreateTodoInput) (*codegen.Todo, error) {
+	entInput := codegen.CreateTodoInput{
+		Text:     input.Text,
+		Complete: input.Complete,
+		UserID:   input.UserID,
+	}
+	return r.Ent.Todo.Create().SetInput(entInput).Save(ctx)
+}
 
 // Foo is the resolver for the foo field.
 func (r *queryResolver) Foo(ctx context.Context) (*models.Foo, error) {
 	return nil, nil
 }
+
+// Mutation returns graphql1.MutationResolver implementation.
+func (r *Resolver) Mutation() graphql1.MutationResolver { return &mutationResolver{r} }
+
+type mutationResolver struct{ *Resolver }

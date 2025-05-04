@@ -4,6 +4,7 @@ package user
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -15,8 +16,17 @@ const (
 	FieldEmail = "email"
 	// FieldHashedPassword holds the string denoting the hashed_password field in the database.
 	FieldHashedPassword = "hashed_password"
+	// EdgeTodos holds the string denoting the todos edge name in mutations.
+	EdgeTodos = "todos"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// TodosTable is the table that holds the todos relation/edge.
+	TodosTable = "todos"
+	// TodosInverseTable is the table name for the Todo entity.
+	// It exists in this package in order to avoid circular dependency with the "todo" package.
+	TodosInverseTable = "todos"
+	// TodosColumn is the table column denoting the todos relation/edge.
+	TodosColumn = "user_todos"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -59,4 +69,25 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 // ByHashedPassword orders the results by the hashed_password field.
 func ByHashedPassword(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHashedPassword, opts...).ToFunc()
+}
+
+// ByTodosCount orders the results by todos count.
+func ByTodosCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTodosStep(), opts...)
+	}
+}
+
+// ByTodos orders the results by todos terms.
+func ByTodos(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTodosStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newTodosStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TodosInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TodosTable, TodosColumn),
+	)
 }

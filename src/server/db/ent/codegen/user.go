@@ -20,7 +20,32 @@ type User struct {
 	Email string `json:"email,omitempty"`
 	// HashedPassword holds the value of the "hashed_password" field.
 	HashedPassword string `json:"-"`
-	selectValues   sql.SelectValues
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges        UserEdges `json:"edges"`
+	selectValues sql.SelectValues
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Todos holds the value of the todos edge.
+	Todos []*Todo `json:"todos,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+
+	namedTodos map[string][]*Todo
+}
+
+// TodosOrErr returns the Todos value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) TodosOrErr() ([]*Todo, error) {
+	if e.loadedTypes[0] {
+		return e.Todos, nil
+	}
+	return nil, &NotLoadedError{edge: "todos"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -78,6 +103,11 @@ func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
 }
 
+// QueryTodos queries the "todos" edge of the User entity.
+func (u *User) QueryTodos() *TodoQuery {
+	return NewUserClient(u.config).QueryTodos(u)
+}
+
 // Update returns a builder for updating this User.
 // Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -107,6 +137,30 @@ func (u *User) String() string {
 	builder.WriteString("hashed_password=<sensitive>")
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedTodos returns the Todos named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (u *User) NamedTodos(name string) ([]*Todo, error) {
+	if u.Edges.namedTodos == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := u.Edges.namedTodos[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (u *User) appendNamedTodos(name string, edges ...*Todo) {
+	if u.Edges.namedTodos == nil {
+		u.Edges.namedTodos = make(map[string][]*Todo)
+	}
+	if len(edges) == 0 {
+		u.Edges.namedTodos[name] = []*Todo{}
+	} else {
+		u.Edges.namedTodos[name] = append(u.Edges.namedTodos[name], edges...)
+	}
 }
 
 // Users is a parsable slice of User.

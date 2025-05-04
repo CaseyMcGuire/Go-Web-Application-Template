@@ -5,6 +5,7 @@ package codegen
 import (
 	"fmt"
 	"gowebtemplate/src/server/db/ent/codegen/todo"
+	"gowebtemplate/src/server/db/ent/codegen/user"
 	"strings"
 
 	"entgo.io/ent"
@@ -19,8 +20,34 @@ type Todo struct {
 	// Text holds the value of the "text" field.
 	Text string `json:"text,omitempty"`
 	// Complete holds the value of the "complete" field.
-	Complete     bool `json:"complete,omitempty"`
+	Complete bool `json:"complete,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the TodoQuery when eager-loading is set.
+	Edges        TodoEdges `json:"edges"`
+	user_todos   *int
 	selectValues sql.SelectValues
+}
+
+// TodoEdges holds the relations/edges for other nodes in the graph.
+type TodoEdges struct {
+	// User holds the value of the user edge.
+	User *User `json:"user,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TodoEdges) UserOrErr() (*User, error) {
+	if e.User != nil {
+		return e.User, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: user.Label}
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -34,6 +61,8 @@ func (*Todo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case todo.FieldText:
 			values[i] = new(sql.NullString)
+		case todo.ForeignKeys[0]: // user_todos
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -67,6 +96,13 @@ func (t *Todo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				t.Complete = value.Bool
 			}
+		case todo.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_todos", value)
+			} else if value.Valid {
+				t.user_todos = new(int)
+				*t.user_todos = int(value.Int64)
+			}
 		default:
 			t.selectValues.Set(columns[i], values[i])
 		}
@@ -78,6 +114,11 @@ func (t *Todo) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (t *Todo) Value(name string) (ent.Value, error) {
 	return t.selectValues.Get(name)
+}
+
+// QueryUser queries the "user" edge of the Todo entity.
+func (t *Todo) QueryUser() *UserQuery {
+	return NewTodoClient(t.config).QueryUser(t)
 }
 
 // Update returns a builder for updating this Todo.
