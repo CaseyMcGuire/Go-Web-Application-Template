@@ -32,7 +32,7 @@ func (u *UserSessionManager) GetUserId(r *http.Request) (int, error) {
 	if authenticated, found := session.Values[authenticatedKey].(bool); !found || !authenticated {
 		return -1, nil
 	}
-	userID, ok := session.Values[userSessionKey].(int)
+	userID, ok := session.Values[userIDKey].(int)
 	if !ok {
 		return -1, nil
 	}
