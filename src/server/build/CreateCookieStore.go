@@ -1,7 +1,7 @@
 package build
 
 import (
-	"github.com/gorilla/securecookie"
+	"encoding/hex"
 	"github.com/gorilla/sessions"
 	"log"
 	"net/http"
@@ -9,21 +9,22 @@ import (
 )
 
 func CreateCookieStore() *sessions.CookieStore {
-	authKey := []byte(os.Getenv("SESSION_AUTH_KEY"))             // For authentication (HMAC)
-	encryptionKey := []byte(os.Getenv("SESSION_ENCRYPTION_KEY")) // For encryption (AES)
+	authKey := os.Getenv("SESSION_AUTH_KEY")             // For authentication (HMAC)
+	encryptionKey := os.Getenv("SESSION_ENCRYPTION_KEY") // For encryption (AES)
 
 	if len(authKey) == 0 || len(encryptionKey) == 0 {
-		if os.Getenv("APP_ENV") == "production" {
-			log.Fatalf("Authentication and/or encryption key(s) are not set")
-		}
-		// Fallback for local development if env vars are not set
-		authKey = securecookie.GenerateRandomKey(64)
-		encryptionKey = securecookie.GenerateRandomKey(32)
+		log.Fatalf("SESSION_AUTH_KEY and/or SESSION_ENCRYPTION_KEY environment variables are not set.")
+	}
+
+	decodedAuthKey, authErr := hex.DecodeString(authKey)
+	decodedEncryptionKey, encryptionErr := hex.DecodeString(encryptionKey)
+	if authErr != nil || encryptionErr != nil {
+		log.Fatalf("SESSION_AUTH_KEY and/or SESSION_ENCRYPTION_KEY failed during decoding")
 	}
 
 	store := sessions.NewCookieStore(
-		authKey,
-		encryptionKey,
+		decodedAuthKey,
+		decodedEncryptionKey,
 	)
 
 	store.Options = &sessions.Options{
