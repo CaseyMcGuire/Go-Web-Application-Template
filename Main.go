@@ -8,6 +8,7 @@ import (
 	"gowebtemplate/src/server/controllers"
 	"gowebtemplate/src/server/db"
 	ent "gowebtemplate/src/server/db/ent/codegen"
+	"gowebtemplate/src/server/middleware"
 	"gowebtemplate/src/server/util"
 	"gowebtemplate/src/server/views"
 	"log"
@@ -35,8 +36,13 @@ func main() {
 		}
 	}(dbClient)
 
+	userSessionManager := util.NewUserSessionManager(
+		build.CreateCookieStore(),
+	)
+
 	userController := controllers.NewUserController(
 		dbClient,
+		userSessionManager,
 	)
 
 	// serve static assets from `/assets`
@@ -48,8 +54,8 @@ func main() {
 			http.NotFound(w, r)
 			return
 		}
-		foo := views.ReactPage("Foo", "index")
-		err := foo.Render(w)
+		todoPage := views.ReactPage("Todo", "index")
+		err := todoPage.Render(w)
 		if err != nil {
 			return
 		}
@@ -64,8 +70,11 @@ func main() {
 	http.HandleFunc("/register", userController.HandleRegister)
 	http.HandleFunc("/logout", userController.HandleLogout)
 
+	var mainHandler http.Handler = http.DefaultServeMux
+	mainHandler = middleware.AuthMiddleware(mainHandler, userSessionManager)
+
 	fmt.Printf("Starting server...")
-	err = http.ListenAndServe(":3001", nil)
+	err = http.ListenAndServe(":3001", mainHandler)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Failed starting server %v", err))
 		return

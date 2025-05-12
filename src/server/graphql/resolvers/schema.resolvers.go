@@ -13,6 +13,7 @@ import (
 
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input *codegen.CreateTodoInput) (*codegen.Todo, error) {
+
 	entInput := codegen.CreateTodoInput{
 		Text:     input.Text,
 		Complete: input.Complete,

@@ -1,25 +1,25 @@
 package controllers
 
 import (
-	"github.com/gorilla/sessions"
 	ent "gowebtemplate/src/server/db/ent/codegen"
 	"gowebtemplate/src/server/services"
+	"gowebtemplate/src/server/util"
 	"gowebtemplate/src/server/views"
 	"net/http"
 )
 
 type UserController struct {
-	userService services.UserService
+	userService    *services.UserService
+	sessionManager *util.UserSessionManager
 }
 
-var (
-	store         = sessions.NewCookieStore([]byte("secret-key"))
-	authenticated = "authenticated"
-)
-
 func (u *UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "user_session")
-	if auth, ok := session.Values[authenticated].(bool); ok && auth {
+	isLoggedIn, err := u.sessionManager.IsUserLoggedIn(r)
+	if err != nil {
+		http.Redirect(w, r, "/500", http.StatusInternalServerError)
+		return
+	}
+	if isLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -30,15 +30,14 @@ func (u *UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
-		exists, err := u.userService.UserWithPasswordExists(r.Context(), email, password)
+		user, err := u.userService.GetUserWithPassword(r.Context(), email, password)
 		if err != nil {
 			http.Redirect(w, r, "/500", http.StatusInternalServerError)
 			return
 		}
 
-		if exists {
-			session.Values[authenticated] = true
-			sessionErr := session.Save(r, w)
+		if user != nil {
+			sessionErr := u.sessionManager.LogInUser(w, r, user.ID)
 			if sessionErr == nil {
 				http.Redirect(w, r, "/", http.StatusOK)
 			} else {
@@ -53,8 +52,12 @@ func (u *UserController) HandleLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserController) HandleRegister(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "user_session")
-	if auth, ok := session.Values[authenticated].(bool); ok && auth {
+	isLoggedIn, err := u.sessionManager.IsUserLoggedIn(r)
+	if err != nil {
+		http.Redirect(w, r, "/500", http.StatusInternalServerError)
+		return
+	}
+	if isLoggedIn {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
@@ -84,20 +87,22 @@ func (u *UserController) HandleRegister(w http.ResponseWriter, r *http.Request) 
 }
 
 func (u *UserController) HandleLogout(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "user_session")
-
-	// Set MaxAge to -1 to delete the cookie
-	session.Options.MaxAge = -1
-	_ = session.Save(r, w)
-	http.Redirect(w, r, "/", http.StatusFound)
+	err := u.sessionManager.LogoutUser(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/500", http.StatusInternalServerError)
+	} else {
+		http.Redirect(w, r, "/", http.StatusFound)
+	}
 }
 
 func NewUserController(
 	dbClient *ent.Client,
+	userSession *util.UserSessionManager,
 ) *UserController {
 	return &UserController{
-		userService: *services.NewUserService(
+		userService: services.NewUserService(
 			dbClient,
 		),
+		sessionManager: userSession,
 	}
 }

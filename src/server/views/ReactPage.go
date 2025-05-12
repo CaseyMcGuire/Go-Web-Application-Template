@@ -43,6 +43,19 @@ func ReactPage(title string, bundleName string) Node {
                 height: 100%;
               }
         `),
+				html.Link(
+					Attr("rel", "preconnect"),
+					Attr("href", "https://fonts.googleapis.com"),
+				),
+				html.Link(
+					Attr("rel", "preconnect"),
+					Attr("href", "https://fonts.gstatic.com"),
+					Attr("crossorigin"),
+				),
+				html.Link(
+					Attr("href", "https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"),
+					Attr("rel", "stylesheet"),
+				),
 			},
 			Body: []Node{
 				html.Div(Attr("id", "root")),
