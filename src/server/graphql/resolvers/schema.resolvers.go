@@ -6,6 +6,7 @@ package resolvers
 
 import (
 	"context"
+	"errors"
 	"gowebtemplate/src/server/db/ent/codegen"
 	graphql1 "gowebtemplate/src/server/graphql/generated"
 	"gowebtemplate/src/server/graphql/models"
@@ -13,13 +14,17 @@ import (
 
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input *codegen.CreateTodoInput) (*codegen.Todo, error) {
-
 	entInput := codegen.CreateTodoInput{
 		Text:     input.Text,
 		Complete: input.Complete,
-		UserID:   input.UserID,
 	}
-	return r.Ent.Todo.Create().SetInput(entInput).Save(ctx)
+
+	userId := ctx.Value("userID")
+	if userId == nil {
+		return nil, errors.New("User not logged in")
+	}
+
+	return r.Ent.Todo.Create().SetInput(entInput).SetUserID(userId.(int)).Save(ctx)
 }
 
 // Foo is the resolver for the foo field.

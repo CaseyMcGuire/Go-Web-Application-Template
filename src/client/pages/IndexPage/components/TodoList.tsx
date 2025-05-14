@@ -33,6 +33,9 @@ export default function TodoList(props: Props) {
              id
              text
              complete
+             user {
+                 id
+             }
          }
       }
     `,

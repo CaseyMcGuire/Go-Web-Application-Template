@@ -6,7 +6,6 @@ package codegen
 type CreateTodoInput struct {
 	Text     string
 	Complete *bool
-	UserID   *int
 }
 
 // Mutate applies the CreateTodoInput on the TodoMutation builder.
@@ -14,9 +13,6 @@ func (i *CreateTodoInput) Mutate(m *TodoMutation) {
 	m.SetText(i.Text)
 	if v := i.Complete; v != nil {
 		m.SetComplete(*v)
-	}
-	if v := i.UserID; v != nil {
-		m.SetUserID(*v)
 	}
 }
 

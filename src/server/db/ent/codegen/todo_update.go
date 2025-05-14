@@ -62,14 +62,6 @@ func (tu *TodoUpdate) SetUserID(id int) *TodoUpdate {
 	return tu
 }
 
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (tu *TodoUpdate) SetNillableUserID(id *int) *TodoUpdate {
-	if id != nil {
-		tu = tu.SetUserID(*id)
-	}
-	return tu
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (tu *TodoUpdate) SetUser(u *User) *TodoUpdate {
 	return tu.SetUserID(u.ID)
@@ -119,6 +111,9 @@ func (tu *TodoUpdate) check() error {
 		if err := todo.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`codegen: validator failed for field "Todo.text": %w`, err)}
 		}
+	}
+	if tu.mutation.UserCleared() && len(tu.mutation.UserIDs()) > 0 {
+		return errors.New(`codegen: clearing a required unique edge "Todo.user"`)
 	}
 	return nil
 }
@@ -224,14 +219,6 @@ func (tuo *TodoUpdateOne) SetUserID(id int) *TodoUpdateOne {
 	return tuo
 }
 
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (tuo *TodoUpdateOne) SetNillableUserID(id *int) *TodoUpdateOne {
-	if id != nil {
-		tuo = tuo.SetUserID(*id)
-	}
-	return tuo
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (tuo *TodoUpdateOne) SetUser(u *User) *TodoUpdateOne {
 	return tuo.SetUserID(u.ID)
@@ -294,6 +281,9 @@ func (tuo *TodoUpdateOne) check() error {
 		if err := todo.TextValidator(v); err != nil {
 			return &ValidationError{Name: "text", err: fmt.Errorf(`codegen: validator failed for field "Todo.text": %w`, err)}
 		}
+	}
+	if tuo.mutation.UserCleared() && len(tuo.mutation.UserIDs()) > 0 {
+		return errors.New(`codegen: clearing a required unique edge "Todo.user"`)
 	}
 	return nil
 }

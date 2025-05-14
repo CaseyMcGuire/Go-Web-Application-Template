@@ -28,7 +28,11 @@ func (Todo) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
 			Ref("todos").
-			Unique(),
+			Unique().
+			Required().
+			Annotations(
+				entgql.Skip(entgql.SkipMutationCreateInput),
+			),
 	}
 }
 

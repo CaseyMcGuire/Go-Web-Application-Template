@@ -13,7 +13,7 @@ func (t *Todo) User(ctx context.Context) (*User, error) {
 	if IsNotLoaded(err) {
 		result, err = t.QueryUser().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
 }
 
 func (u *User) Todos(ctx context.Context) (result []*Todo, err error) {

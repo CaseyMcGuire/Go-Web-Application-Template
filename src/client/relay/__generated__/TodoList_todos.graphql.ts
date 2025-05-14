@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<1924b6a6ac2c6756aa0cefa88934a158>>
+ * @generated SignedSource<<81aed43383fa3721a59c951e62c13c49>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,6 +15,9 @@ export type TodoList_todos$data = {
     readonly complete: boolean;
     readonly id: string;
     readonly text: string;
+    readonly user: {
+      readonly id: string;
+    } | null | undefined;
   }>;
   readonly " $fragmentType": "TodoList_todos";
 };
@@ -23,7 +26,15 @@ export type TodoList_todos$key = {
   readonly " $fragmentSpreads": FragmentRefs<"TodoList_todos">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
@@ -37,13 +48,7 @@ const node: ReaderFragment = {
       "name": "todos",
       "plural": true,
       "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "id",
-          "storageKey": null
-        },
+        (v0/*: any*/),
         {
           "alias": null,
           "args": null,
@@ -57,6 +62,18 @@ const node: ReaderFragment = {
           "kind": "ScalarField",
           "name": "complete",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "User",
+          "kind": "LinkedField",
+          "name": "user",
+          "plural": false,
+          "selections": [
+            (v0/*: any*/)
+          ],
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -65,7 +82,8 @@ const node: ReaderFragment = {
   "type": "Query",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "86f32f16475206baa9d08a498b542d53";
+(node as any).hash = "34669b1cc6f6576d9af27ddefda66d43";
 
 export default node;

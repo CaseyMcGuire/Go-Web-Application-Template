@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "text", Type: field.TypeString, Size: 2147483647},
 		{Name: "complete", Type: field.TypeBool, Default: false},
-		{Name: "user_todos", Type: field.TypeInt, Nullable: true},
+		{Name: "user_todos", Type: field.TypeInt},
 	}
 	// TodosTable holds the schema information for the "todos" table.
 	TodosTable = &schema.Table{
@@ -25,7 +25,7 @@ var (
 				Symbol:     "todos_users_todos",
 				Columns:    []*schema.Column{TodosColumns[3]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}

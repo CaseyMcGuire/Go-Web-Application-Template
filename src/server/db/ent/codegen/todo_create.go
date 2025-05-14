@@ -46,14 +46,6 @@ func (tc *TodoCreate) SetUserID(id int) *TodoCreate {
 	return tc
 }
 
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (tc *TodoCreate) SetNillableUserID(id *int) *TodoCreate {
-	if id != nil {
-		tc = tc.SetUserID(*id)
-	}
-	return tc
-}
-
 // SetUser sets the "user" edge to the User entity.
 func (tc *TodoCreate) SetUser(u *User) *TodoCreate {
 	return tc.SetUserID(u.ID)
@@ -112,6 +104,9 @@ func (tc *TodoCreate) check() error {
 	}
 	if _, ok := tc.mutation.Complete(); !ok {
 		return &ValidationError{Name: "complete", err: errors.New(`codegen: missing required field "Todo.complete"`)}
+	}
+	if len(tc.mutation.UserIDs()) == 0 {
+		return &ValidationError{Name: "user", err: errors.New(`codegen: missing required edge "Todo.user"`)}
 	}
 	return nil
 }

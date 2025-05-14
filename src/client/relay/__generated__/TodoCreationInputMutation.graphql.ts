@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<871a3cc8a23db6140dccfd0f89c12c18>>
+ * @generated SignedSource<<56f66e41cc64095d83c5e331f9e46199>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,6 @@ import { ConcreteRequest } from 'relay-runtime';
 export type CreateTodoInput = {
   complete?: boolean | null | undefined;
   text: string;
-  userID?: string | null | undefined;
 };
 export type TodoCreationInputMutation$variables = {
   input?: CreateTodoInput | null | undefined;

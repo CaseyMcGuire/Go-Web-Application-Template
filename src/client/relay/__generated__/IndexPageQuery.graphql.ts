@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ee1368391795ee638086dc6d558fb8a5>>
+ * @generated SignedSource<<c2934694c118a5f2f745d3832e760ff0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,7 +19,15 @@ export type IndexPageQuery = {
   variables: IndexPageQuery$variables;
 };
 
-const node: ConcreteRequest = {
+const node: ConcreteRequest = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
@@ -49,13 +57,7 @@ const node: ConcreteRequest = {
         "name": "todos",
         "plural": true,
         "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
+          (v0/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -69,6 +71,18 @@ const node: ConcreteRequest = {
             "kind": "ScalarField",
             "name": "complete",
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "User",
+            "kind": "LinkedField",
+            "name": "user",
+            "plural": false,
+            "selections": [
+              (v0/*: any*/)
+            ],
+            "storageKey": null
           }
         ],
         "storageKey": null
@@ -76,14 +90,15 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "d8d4f8032661ce408985183a1b914621",
+    "cacheID": "318da2027052b6466ea9fdd919a01066",
     "id": null,
     "metadata": {},
     "name": "IndexPageQuery",
     "operationKind": "query",
-    "text": "query IndexPageQuery {\n  ...TodoList_todos\n}\n\nfragment TodoList_todos on Query {\n  todos {\n    id\n    text\n    complete\n  }\n}\n"
+    "text": "query IndexPageQuery {\n  ...TodoList_todos\n}\n\nfragment TodoList_todos on Query {\n  todos {\n    id\n    text\n    complete\n    user {\n      id\n    }\n  }\n}\n"
   }
 };
+})();
 
 (node as any).hash = "071da5782ea9eef5300fa2fb90085785";
 

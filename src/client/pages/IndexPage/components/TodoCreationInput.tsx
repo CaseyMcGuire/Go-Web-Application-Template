@@ -36,7 +36,6 @@ export default function TodoCreationInput() {
         input: {
           text: input,
           complete: false,
-          userID: "1"
         }
       }
     })

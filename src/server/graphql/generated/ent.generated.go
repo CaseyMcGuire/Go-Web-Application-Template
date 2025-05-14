@@ -821,11 +821,14 @@ func (ec *executionContext) _Todo_user(ctx context.Context, field graphql.Collec
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*codegen.User)
 	fc.Result = res
-	return ec.marshalOUser2ᚖgowebtemplateᚋsrcᚋserverᚋdbᚋentᚋcodegenᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgowebtemplateᚋsrcᚋserverᚋdbᚋentᚋcodegenᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Todo_user(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -999,7 +1002,7 @@ func (ec *executionContext) unmarshalInputCreateTodoInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"text", "complete", "userID"}
+	fieldsInOrder := [...]string{"text", "complete"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -1020,13 +1023,6 @@ func (ec *executionContext) unmarshalInputCreateTodoInput(ctx context.Context, o
 				return it, err
 			}
 			it.Complete = data
-		case "userID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			data, err := ec.unmarshalOID2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
 		}
 	}
 
@@ -1709,13 +1705,16 @@ func (ec *executionContext) _Todo(ctx context.Context, sel ast.SelectionSet, obj
 		case "user":
 			field := field
 
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
 				res = ec._Todo_user(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -2108,13 +2107,6 @@ func (ec *executionContext) unmarshalOTodoWhereInput2ᚖgowebtemplateᚋsrcᚋse
 	}
 	res, err := ec.unmarshalInputTodoWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUser2ᚖgowebtemplateᚋsrcᚋserverᚋdbᚋentᚋcodegenᚐUser(ctx context.Context, sel ast.SelectionSet, v *codegen.User) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._User(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOUserWhereInput2ᚕᚖgowebtemplateᚋsrcᚋserverᚋdbᚋentᚋcodegenᚐUserWhereInputᚄ(ctx context.Context, v any) ([]*codegen.UserWhereInput, error) {
