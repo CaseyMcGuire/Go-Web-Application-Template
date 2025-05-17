@@ -3,7 +3,7 @@ import {TodoList_todos$key} from "relay/__generated__/TodoList_todos.graphql";
 import stylex from "@stylexjs/stylex";
 
 type Props = {
-  todos:TodoList_todos$key
+  todos: TodoList_todos$key
 }
 
 const styles = stylex.create({
@@ -12,20 +12,38 @@ const styles = stylex.create({
     width: '100%'
   },
   todoListItem: {
+    display: 'flex',
+    alignItems: 'center',
     fontFamily: 'Josefin Sans',
     padding: '24px',
     fontSize: '18px',
     backgroundColor: '#FFFFFF',
-    borderBottom: '1px solid #E3E4F1'
+    borderBottom: '1px solid #E3E4F1',
   },
   todoListItemText: {
     marginLeft: '24px'
   },
   todoListItemCheckbox: {
-    '::after': {
-      borderRadius: '100%',
-      backgroundColor: 'green'
-    },
+    border: '0.1px solid #979797',
+    borderRadius: '100%',
+    height: '24px',
+    width: '24px',
+    cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  todoListItemCheckboxSelected: {
+    backgroundImage: 'linear-gradient(to bottom right, #55DDFF, #C058F3)',
+    border: 'none'
+  },
+  todoListItemCheckmark: {
+    border: '2px solid white',
+    borderTop: 'none',
+    borderLeft: 'none',
+    height: '10px',
+    width: '6px',
+    transform: 'rotate(45deg)'
   }
 })
 
@@ -51,12 +69,7 @@ export default function TodoList(props: Props) {
       {
         data.todos.map(todo => {
           return (
-            <div
-              {...stylex.props(styles.todoListItem)}
-            >
-              <TodoListCompletionCheck checked={todo.complete} />
-              <span {...stylex.props(styles.todoListItemText)}>{todo.text}</span>
-            </div>
+              <TodoListItem checked={todo.complete} text={todo.text} />
           )
         })
       }
@@ -64,10 +77,15 @@ export default function TodoList(props: Props) {
   )
 }
 
-function TodoListCompletionCheck(props: {checked: boolean}) {
+function TodoListItem(props: {checked: boolean, text: string}) {
   return (
-    <input
-      {...stylex.props(styles.todoListItemCheckbox)}
-      type="checkbox" checked={props.checked} />
+    <div {...stylex.props(styles.todoListItem)}>
+      <div {...stylex.props(styles.todoListItemCheckbox, props.checked && styles.todoListItemCheckboxSelected)}>
+        {
+          props.checked && <div {...stylex.props(styles.todoListItemCheckmark)} />
+        }
+      </div>
+      <div {...stylex.props(styles.todoListItemText)}>{props.text}</div>
+    </div>
   )
 }
