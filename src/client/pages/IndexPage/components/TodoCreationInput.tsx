@@ -14,7 +14,7 @@ const styles = stylex.create({
     fontSize: '18px',
     fontFamily: 'Josefin Sans',
     border: '1px solid grey',
-    padding: '8px',
+    padding: '20px',
     borderRadius: '5px'
   }
 })

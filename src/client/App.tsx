@@ -1,4 +1,3 @@
-import * as stylex from "@stylexjs/stylex";
 import {renderComponent} from "util/ReactPageUtils";
 import {createBrowserRouter, RouterProvider} from "react-router";
 import LoginPage from "pages/LoginPage/LoginPage";
@@ -7,12 +6,6 @@ import {RelayEnvironmentProvider} from "react-relay";
 import {RelayConfig} from "relay/RelayConfig";
 import { Suspense } from "react";
 import IndexPage from "pages/IndexPage/IndexPage";
-
-const styles = stylex.create({
-  body: {
-    backgroundColor: 'green'
-  }
-});
 
 const router = createBrowserRouter([
   {

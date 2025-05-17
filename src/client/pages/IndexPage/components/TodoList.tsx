@@ -8,14 +8,18 @@ type Props = {
 
 const styles = stylex.create({
   todoListContainer: {
-    borderRadius: '5px',
-    border: '1px solid grey',
+    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',
     width: '100%'
   },
   todoListItem: {
     fontFamily: 'Josefin Sans',
     padding: '24px',
-    fontSize: '18px'
+    fontSize: '18px',
+    backgroundColor: '#FFFFFF',
+    borderBottom: '1px solid #E3E4F1'
+  },
+  todoListItemText: {
+    marginLeft: '24px'
   },
   todoListItemCheckbox: {
     '::after': {
@@ -51,7 +55,7 @@ export default function TodoList(props: Props) {
               {...stylex.props(styles.todoListItem)}
             >
               <TodoListCompletionCheck checked={todo.complete} />
-              {todo.text}
+              <span {...stylex.props(styles.todoListItemText)}>{todo.text}</span>
             </div>
           )
         })

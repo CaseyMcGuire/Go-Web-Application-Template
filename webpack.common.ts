@@ -17,7 +17,7 @@ const config : Configuration = {
     modules: [
       // in order to use absolute paths, set the root folders.
       // In order for typescript to also compile, the project root must match the
-      // 'base_url' field in tsconfig. In this case, this is './src/main/web-frontend'
+      // 'base_url' field in tsconfig. In this case, this is './src/client'
       path.resolve('./src/client'),
       path.resolve('./node_modules')
     ]

@@ -31,8 +31,9 @@ func ReactPage(title string, bundleName string) Node {
               }
             }`),
 				),
-				html.Style(
-					`
+				html.StyleEl(
+					Raw(
+						`
               * {
                 margin: 0;
                 padding: 0;
@@ -43,6 +44,7 @@ func ReactPage(title string, bundleName string) Node {
                 height: 100%;
               }
         `),
+				),
 				html.Link(
 					Attr("rel", "preconnect"),
 					Attr("href", "https://fonts.googleapis.com"),

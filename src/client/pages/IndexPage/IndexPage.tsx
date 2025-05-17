@@ -6,12 +6,34 @@ import TodoList from "pages/IndexPage/components/TodoList";
 import stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
+  body: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  imageContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    backgroundImage: `url("../../../../assets/images/bg-desktop-light.jpg")`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPositionX: 'center'
+  },
   todoContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '540px'
+    width: '540px',
+    marginTop: '72px',
+  },
+  todoHeaderContainer: {
+    marginBottom: '48px',
+    width: '100%'
+  },
+  todoCreationInputContainer: {
+    width: '100%',
+    marginBottom: '24px',
   }
 })
 
@@ -23,11 +45,17 @@ export default function IndexPage() {
   `, {});
 
   return (
-    <div {...stylex.props(styles.todoContainer)}>
-      <TodoHeader />
-      <TodoCreationInput />
-      <TodoList todos={query} />
-    </div>
+      <div {...stylex.props(styles.imageContainer)}>
+        <div {...stylex.props(styles.todoContainer)}>
+          <div {...stylex.props(styles.todoHeaderContainer)}>
+            <TodoHeader />
+          </div>
+          <div {...stylex.props(styles.todoCreationInputContainer)}>
+            <TodoCreationInput />
+          </div>
+          <TodoList todos={query} />
+        </div>
+      </div>
   )
 }
 
