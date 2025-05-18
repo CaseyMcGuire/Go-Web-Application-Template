@@ -4,6 +4,8 @@ import TodoCreationInput from "pages/IndexPage/components/TodoCreationInput";
 import TodoHeader from "pages/IndexPage/components/TodoHeader";
 import TodoList from "pages/IndexPage/components/TodoList";
 import stylex from "@stylexjs/stylex";
+import {useContext} from "react";
+import {TodoContext} from "common/context/TodoContext";
 
 const styles = stylex.create({
   body: {
@@ -15,9 +17,14 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'center',
     width: '100%',
-    backgroundImage: `url("../../../../assets/images/bg-desktop-light.jpg")`,
     backgroundRepeat: 'no-repeat',
     backgroundPositionX: 'center'
+  },
+  darkImage: {
+    backgroundImage: `url("../../../../assets/images/bg-desktop-dark.jpg")`
+  },
+  lightImage: {
+    backgroundImage: `url("../../../../assets/images/bg-desktop-light.jpg")`
   },
   todoContainer: {
     display: 'flex',
@@ -44,8 +51,10 @@ export default function IndexPage() {
     }
   `, {});
 
+  const context = useContext(TodoContext);
+  const imageStyle = context?.colorMode == 'light' ? styles.lightImage : styles.darkImage;
   return (
-      <div {...stylex.props(styles.imageContainer)}>
+      <div {...stylex.props(styles.imageContainer, imageStyle)}>
         <div {...stylex.props(styles.todoContainer)}>
           <div {...stylex.props(styles.todoHeaderContainer)}>
             <TodoHeader />
