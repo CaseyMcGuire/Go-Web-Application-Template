@@ -3,13 +3,14 @@ import { Configuration } from "webpack";
 
 
 // @ts-ignore
-import StylexPlugin from "./packages/stylex-webpack-plugin/index";
+import StylexPlugin from "@caseyjaymcguire/stylex-webpack-plugin";
 
 
 
 const config : Configuration = {
   entry: {
-    index: './src/client/App'
+    index: './src/client/App',
+    foo: './src/client/Foo.tsx'
   },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
